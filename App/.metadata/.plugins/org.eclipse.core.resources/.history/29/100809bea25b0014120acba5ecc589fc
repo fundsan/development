@@ -1,0 +1,75 @@
+
+
+public class Photo {
+	@Id
+	private long id;
+
+	private String name;
+	private String url;
+	
+
+	public Photo() {
+	}
+
+	public Photo(String name, String url) {
+		super();
+		this.name = name;
+		this.url = url;
+		
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	/**
+	 * Two Videos will generate the same hashcode if they have exactly the same
+	 * values for their name, url, and duration.
+	 * 
+	 */
+	@Override
+	public int hashCode() {
+		// Google Guava provides great utilities for hashing
+		return Objects.hashCode(name, url);
+	}
+
+	/**
+	 * Two Videos are considered equal if they have exactly the same values for
+	 * their name, url, and duration.
+	 * 
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Photo) {
+			Photo other = (Photo) obj;
+			// Google Guava provides great utilities for equals too!
+			return Objects.equal(name, other.name)
+					&& Objects.equal(url, other.url);
+					
+		} else {
+			return false;
+		}
+	}
+
+}

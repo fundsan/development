@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun name="sunshine.test" project="sunshine.test" tests="3" started="3" failures="0" errors="0" ignored="0">
+  <testsuite name="samsung-sc_02f-615cd542" time="0.288">
+    <testsuite name="com.example.sunshine.app.test.TestDb" time="0.288">
+      <testcase name="testAndroidTestCaseSetupProperly " classname="com.example.sunshine.app.test.TestDb" time="0.0"/>
+      <testcase name="testCreateDb " classname="com.example.sunshine.app.test.TestDb" time="0.037"/>
+      <testcase name="testInsertReadDb " classname="com.example.sunshine.app.test.TestDb" time="0.251"/>
+    </testsuite>
+  </testsuite>
+</testrun>

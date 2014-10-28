@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun name="sunshine.test" project="sunshine.test" tests="3" started="3" failures="1" errors="0" ignored="0">
+  <testsuite name="samsung-sc_02f-615cd542" time="0.026">
+    <testsuite name="com.example.sunshine.app.test.TestDb" time="0.026">
+      <testcase name="testAndroidTestCaseSetupProperly " classname="com.example.sunshine.app.test.TestDb" time="0.0"/>
+      <testcase name="testCreateDb " classname="com.example.sunshine.app.test.TestDb" time="0.001"/>
+      <testcase name="testInsertReadDb " classname="com.example.sunshine.app.test.TestDb" time="0.025">
+        <failure>junit.framework.AssertionFailedError&#13;
+at com.example.sunshine.app.test.TestDb.testInsertReadDb(TestDb.java:99)&#13;
+at java.lang.reflect.Method.invokeNative(Native Method)&#13;
+at android.test.AndroidTestRunner.runTest(AndroidTestRunner.java:191)&#13;
+at android.test.AndroidTestRunner.runTest(AndroidTestRunner.java:176)&#13;
+at android.test.InstrumentationTestRunner.onStart(InstrumentationTestRunner.java:554)&#13;
+at android.app.Instrumentation$InstrumentationThread.run(Instrumentation.java:1738)&#13;
+
+</failure>
+      </testcase>
+    </testsuite>
+  </testsuite>
+</testrun>

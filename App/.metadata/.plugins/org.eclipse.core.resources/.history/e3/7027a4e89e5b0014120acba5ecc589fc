@@ -1,0 +1,36 @@
+import java.util.Collection;
+
+import org.magnum.mobilecloud.video.repository.Video;
+
+import retrofit.http.Body;
+import retrofit.http.GET;
+import retrofit.http.POST;
+import retrofit.http.Query;
+
+
+public interface class Photo {
+	
+		
+		public static final String TITLE_PARAMETER = "title";
+		
+		
+
+		// The path where we expect the VideoSvc to live
+		public static final String PHOTO_SVC_PATH = "/video";
+
+		// The path to search videos by title
+		public static final String PHOTO_TITLE_SEARCH_PATH = PHOTO_SVC_PATH + "/search/findByName";
+		
+		
+		@GET(PHOTO_SVC_PATH)
+		public Collection<Video> getVideoList();
+		
+		@POST(PHOTO_SVC_PATH)
+		public Void addVideo(@Body Video v);
+		
+		@GET(PHOTO_TITLE_SEARCH_PATH)
+		public Collection<Photo> findByTitle(@Query(TITLE_PARAMETER) String title);
+		
+	
+
+}

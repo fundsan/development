@@ -1,0 +1,56 @@
+﻿Requirements Document: What Should I Do Right Now?
+
+1. Introduction
+
+Too many times have we humans wondered what we should do next. Our lives are consumed by monotony and idleness. Stuck in the vicious cycle of habitual boredom, we seek suggestions for activities to do. This application will provide those suggestions. This app aims at helping those individuals whom have no idea what to do next. The app assumes that if the user is using the app, then they have considered the most common of activities and will not suggest them. The app will not give suggestions like “Watch TV,” or “ “Go to the park,”, but will give more specific and uncommon activities for the user to consider based on the input and preferences from the user: “Call a friend and watch a TV program that the two of you have never watched.” or “Go to the park and draw a picture of something that interests you using any medium you want.” Finally the app will only give at most 3 suggestions, in order to prevent the burden of choice. 
+
+2. User Requirements
+
+2.1 Software Interface:
+
+Software will run as an Android application on mobile Android devices. Should be backwards compatible with all versions of Android API level 14 and up. 
+
+
+2.2 User Interface:
+The software shall provide an interface for the user to select answers to given questions. Once the software is given enough answers to give appropriate activities, the user will be prompted with the suggested activities. 
+
+
+2.3 User Characteristics:
+User is not expected to have any solid technical background, but user is expected have already of considered possible common activities before using the app. User is expected to be over the age of 13. 
+
+3. System Requirements
+
+3.1 Functional Requirements
+
+3.1.1 The system will keep a record of the current state of questions asked, answers given, and attributes collected.
+
+3.1.2 System should find activities that are appropriate for the user based on the selected answers from the user. 
+
+3.1.3 Once the system is given enough feedback from the user it should suggest 3 activities for the user.
+
+3.1.4 System should keep a cache of the 5 most recently suggested activities to prevent repetitive suggestions.
+
+
+
+3.1.5.Questions: 
+
+	3.1.5.1 A question consists of its answers and its text.
+
+	3.1.5.2 An answer consists of its text and its attributes.
+	
+	3.1.5.3 When an answer is selected it should allocate its attributes to the record of the current state.
+ 
+3.1.6. Activities:
+	
+	3.1.6.1 An activity consists of its required points or threshold and its text.
+
+	3.1.6.2 A threshold will consist of 5 points. 
+
+
+3.2 Non-Functional Requirements
+
+3.2.1 System must contain 50 suggested activities.
+
+3.2.2 Cache for previously suggested activities should be stored on device.
+
+3.2.3 The user should not need to use the app for more than 3 minutes. 

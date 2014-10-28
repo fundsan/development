@@ -1,0 +1,11 @@
+1410101240883	Extracts string 'DigitalClock' into R.string.digitalclock
+1410102637700	Rename resource 'text.xml'
+1410102653439	Rename resource 'lsit_item_forecast.xml'
+1410241004030	Rename type 'SunshineFragment'
+1410253177722	Delete element
+1410448563291	Copy compilation unit
+1410448577140	Delete element
+1410450903245	Delete element
+1410492988611	Extract method 'updateWeather'
+1410494847599	Rename resource 'arrays.xml'
+1410508795148	Rename type 'PlaceholderFragment'

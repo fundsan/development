@@ -1,0 +1,52 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp" >
+
+    <TextView
+        android:id="@+id/createTextTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/create_title" />
+
+    <EditText
+        android:id="@+id/createEditTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:singleLine="True" />
+    
+    <TextView
+        android:id="@+id/createImageTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/create_image" />
+
+    <ImageView
+        
+        android:id="@+id/imageButtonCreate"
+        android:layout_width="300dp"
+        android:layout_height="200dp"
+        android:src="@android:drawable/btn_star" />
+
+    <EditText
+        android:id="@+id/createEditDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:visibility="gone" />
+
+    <Button
+        
+        android:id="@+id/buttonCreateSubmit"
+        android:layout_width="wrap_content"
+        android:layout_height="33dp"
+        android:text="@string/create_image_button_submit"
+        android:textSize="12sp"
+        android:visibility="gone" />
+
+   
+
+</LinearLayout>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workingSetManager>
+<workingSet editPageId="org.eclipse.jdt.ui.JavaWorkingSetPage" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1414082335929_1" label="1-SimpleServlet" name="1-SimpleServlet"/>
+<workingSet editPageId="org.eclipse.jdt.ui.JavaWorkingSetPage" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1414128545034_2" label="10-VideoServiceWithMongoDB" name="10-VideoServiceWithMongoDB">
+<item elementID="=10-VideoServiceWithMongoDB" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+</workingSet>
+<workingSet editPageId="org.eclipse.jdt.ui.JavaWorkingSetPage" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1414207792507_3" label="3-VideoControllerAndRetrofit" name="3-VideoControllerAndRetrofit">
+<item elementID="=3-VideoControllerAndRetrofit" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+</workingSet>
+<workingSet editPageId="org.eclipse.jdt.ui.JavaWorkingSetPage" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1414208816485_4" label="2-VideoServlet" name="2-VideoServlet">
+<item elementID="=2-VideoServlet" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+</workingSet>
+<workingSet editPageId="org.eclipse.jdt.ui.JavaWorkingSetPage" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1414209092354_5" label="6-VideoServiceWithDataRest" name="6-VideoServiceWithDataRest">
+<item elementID="=6-VideoServiceWithDataRest" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+</workingSet>
+<workingSet aggregate="true" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1414084373672_1" label="Window Working Set" name="Aggregate for window 1413781030407"/>
+</workingSetManager>
