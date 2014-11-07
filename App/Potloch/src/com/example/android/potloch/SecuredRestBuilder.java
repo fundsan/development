@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 
-import org.apache.commons.io.IOUtils;
+
 
 import retrofit.Endpoint;
 import retrofit.ErrorHandler;
@@ -128,8 +128,8 @@ public class SecuredRestBuilder extends RestAdapter.Builder {
 								+ resp.getStatus() + " - " + resp.getReason());
 					} else {
 						// Extract the string body from the response
-				        String body = IOUtils.toString(resp.getBody().in());
-						
+				        //String body = IOUtils.toString(resp.getBody().in());
+						String body = null;
 						// Extract the access_token (bearer token) from the response so that we
 				        // can add it to future requests.
 						accessToken = new Gson().fromJson(body, JsonObject.class).get("access_token").getAsString();

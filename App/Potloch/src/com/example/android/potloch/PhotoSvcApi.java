@@ -15,7 +15,7 @@ public interface  PhotoSvcApi {
 	
 	public final String TEST_URL = "http://10.0.2.2:8080";
 	
-	public static final String TOKEN_PATH = "/oauth/token";
+	//public static final String TOKEN_PATH = "/oauth/token";
 
 	// The path where we expect the VideoSvc to live
 	public static final String PHOTO_SVC_PATH = "/video";

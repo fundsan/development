@@ -11,9 +11,10 @@
     <string name="pref_search_default" translatable="false">potloch</string>
     <string name="title_activity_chain">ChainActivity</string>
     <string name="title_activity_create">CreateActivity</string>
-    <string name= "create_title">Title</string>
+    <string name="create_title">Title</string>
     <string name="create_image">Image</string>
     <string name="create_image_button_upload">Upload</string>
-     <string name="create_image_button_submit">Submit</string>
-
+    <string name="create_image_button_submit">Submit</string>
+    <string name="title_activity_find_chain">FindChainActivity</string>
+	<string name="chain_title">Choose a chain</string>
 </resources>

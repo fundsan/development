@@ -115,11 +115,13 @@ public class CreateActivity extends ActionBarActivity {
 							// TODO Auto-generated method stub
 						
 
-							PhotoSvcApi photoService= new RestAdapter.Builder()
-							.setEndpoint(PhotoSvcApi.TEST_URL).setLogLevel(LogLevel.FULL).build()
-							.create(PhotoSvcApi.class);
-							Photo p = new Photo(title.getText().toString(),"/"+title.getText().toString());
-							 photoService.addPhoto(p);
+							PhotoSvcApi photoService= RestServer.getInstance();
+							Intent intent = getActivity().getIntent();
+							Photo p = new Photo(title.getText().toString(),"/"+title.getText().toString(), intent.getExtras().getLong("PARENTID"));
+							
+							photoService.addPhoto(p);
+							
+							
 							 return p;
 						}
 					
@@ -140,7 +142,12 @@ public class CreateActivity extends ActionBarActivity {
 
 					@Override
 					public void success(Photo result) {
-						// TODO Auto-generated method stub
+						Toast.makeText(
+								PlaceholderFragment.this.getActivity(),
+								"succefully added "+result.getName(),
+								
+								Toast.LENGTH_SHORT).show();
+// TODO Auto-generated method stub
 						
 					}
 				});

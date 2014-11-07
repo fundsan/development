@@ -1,5 +1,6 @@
 package server.main.java.gift;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.ElementCollection;
@@ -7,7 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
 
 import com.google.common.base.Objects;
 
@@ -20,20 +20,40 @@ public class Photo {
 
 	private String name;
 	private String url;
-
-	private long likes;
+	private long parentID; 
+private long likes;
 	@ElementCollection
 	private Set<String> likedBy;
+	@ElementCollection
+	private Set<Long> childrenID;
 	
+	public Set<Long> getChildrenID() {
+		return childrenID;
+	}
+
+	public void setChildrenID(Set<Long> childrenPhotos) {
+		this.childrenID = childrenPhotos;
+	}
+
+	public long getParentID() {
+		return parentID;
+	}
+
+	public void setParentID(long parentPhoto) {
+		this.parentID = parentPhoto;
+	}
 
 	public Photo() {
 	}
 
-	public Photo(String name, String url) {
+	public Photo(String name, String url, long parentID) {
 		super();
 		this.name = name;
 		this.url = url;
-		
+		this.likes = 0;
+		this.likedBy = new HashSet<String>();
+		this.childrenID = new HashSet<Long>();
+		this.parentID = parentID;
 	}
 
 	
@@ -115,5 +135,6 @@ public class Photo {
 	public void subtractOneLike(){
 		this.likes--;
 	}
+
 
 }

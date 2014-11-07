@@ -1,6 +1,9 @@
 package com.example.android.potloch;
 
+import java.util.HashSet;
 import java.util.Set;
+
+
 import com.google.common.base.Objects;
 
 
@@ -17,15 +20,35 @@ public class Photo {
 	
 	private Set<String> likedBy;
 	
+	private Set<Long> childrenID;
+	private long parentID; 
+	public Set<Long> getChildrenPhotos() {
+		return childrenID;
+	}
+
+	public void setChildrenPhotos(Set<Long> childrenPhotos) {
+		this.childrenID = childrenPhotos;
+	}
+
+	public long getParentPhoto() {
+		return parentID;
+	}
+
+	public void setParentPhoto(long parentPhoto) {
+		this.parentID = parentPhoto;
+	}
 
 	public Photo() {
 	}
 
-	public Photo(String name, String url) {
+	public Photo(String name, String url, long parentID) {
 		super();
 		this.name = name;
 		this.url = url;
-		
+		this.likes = 0;
+		this.likedBy = new HashSet<String>();
+		this.childrenID = new HashSet<Long>();
+		this.parentID = parentID;
 	}
 
 	

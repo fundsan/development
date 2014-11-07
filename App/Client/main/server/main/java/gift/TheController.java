@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import retrofit.http.Multipart;
 import server.main.java.gift.PhotoRepository;
 
 @Controller
@@ -55,8 +56,11 @@ public class TheController {
 	@RequestMapping(value=PHOTO_SVC_PATH, method=RequestMethod.POST)
 	public @ResponseBody Photo addPhoto(@RequestBody Photo p)  {
 		// TODO Auto-generated method stub
-		
 		photos.save(p);
+		
+		Set<Long> parentsChildren = photos.findOne(p.getParentID()).getChildrenID();
+		parentsChildren.add(p.getId());
+		
 		   
 		   
 		return p;
@@ -77,5 +81,7 @@ public class TheController {
 	public @ResponseBody Collection<Photo> findByTitle(@RequestParam(TITLE_PARAMETER)  String title) {
 		// TODO Auto-generated method stub
 		return this.photos.findByName(title);
+		
 	}
+	
 }
