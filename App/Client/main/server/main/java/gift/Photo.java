@@ -15,17 +15,21 @@ import com.google.common.base.Objects;
 @Entity
 public class Photo {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	//@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
-
 	private String name;
-	private String url;
+	private String text; 
+	
+	
 	private long parentID; 
-private long likes;
+	private long likes;
+	private String user;
+	private String date;
 	@ElementCollection
 	private Set<String> likedBy;
 	@ElementCollection
 	private Set<Long> childrenID;
+	
 	
 	public Set<Long> getChildrenID() {
 		return childrenID;
@@ -46,24 +50,21 @@ private long likes;
 	public Photo() {
 	}
 
-	public Photo(String name, String url, long parentID) {
+	public Photo(String name, String text, String user, String date, long id, long parentID) {
 		super();
 		this.name = name;
-		this.url = url;
+		this.text = text;
+		
+		this.user = user;
 		this.likes = 0;
+		this.date = date;
 		this.likedBy = new HashSet<String>();
 		this.childrenID = new HashSet<Long>();
+		this.id = id;
 		this.parentID = parentID;
 	}
 
 	
-	public String getUrl() {
-		return url;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
-	}
 
 
 	public long getId() {
@@ -79,29 +80,8 @@ private long likes;
 	 * values for their name, url, and duration.
 	 * 
 	 */
-	@Override
-	public int hashCode() {
-		// Google Guava provides great utilities for hashing
-		return Objects.hashCode(name, url);
-	}
 
-	/**
-	 * Two Videos are considered equal if they have exactly the same values for
-	 * their name, url, and duration.
-	 * 
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof Photo) {
-			Photo other = (Photo) obj;
-			// Google Guava provides great utilities for equals too!
-			return Objects.equal(name, other.name)
-					&& Objects.equal(url, other.url);
-					
-		} else {
-			return false;
-		}
-	}
+	
 
 	public String getName() {
 		return name;
@@ -134,6 +114,30 @@ private long likes;
 	}
 	public void subtractOneLike(){
 		this.likes--;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
+
+	public String getUser() {
+		return user;
+	}
+
+	public void setUser(String user) {
+		this.user = user;
+	}
+
+	public String getDate() {
+		return date;
+	}
+
+	public void setDate(String date) {
+		this.date = date;
 	}
 
 

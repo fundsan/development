@@ -1,16 +1,19 @@
 package com.example.android.potloch.data;
 
+import com.example.android.potloch.data.GiftContract.GiftEntry;
+
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.util.Log;
 
 public class GiftProvider extends ContentProvider {
 	private static final int GIFT = 100;
-	private static final int GIFT_WITH_TEXT = 101;
-	private static final int GIFT_WITH_TEXT_AND_DATE = 102;
+	private static final int GIFT_WITH_TITLE = 101;
+	private static final int GIFT_WITH_ID = 102;
 	private GiftDbHelper mOpenHelper;
 	private UriMatcher sUriMatcher = buildUriMatcher();
 
@@ -29,12 +32,28 @@ public class GiftProvider extends ContentProvider {
 		// and query the database accordingly.
 		Cursor retCursor;
 		switch (sUriMatcher.match(uri)) {
-		// "weather/*/*"
+	
 
 		case GIFT: {
 			retCursor = mOpenHelper.getReadableDatabase().query(
 					GiftContract.GiftEntry.TABLE_NAME, projection, selection,
 					selectionArgs, null, null, sortOrder);
+			break;
+		}
+		case GIFT_WITH_TITLE: {
+			String title = GiftContract.GiftEntry.getTitleFromUri(uri);
+			
+			Log.e("query for Title", title);
+			retCursor = mOpenHelper.getReadableDatabase().query(GiftContract.GiftEntry.TABLE_NAME,
+					projection, GiftEntry.COLUMN_TITLE+"=?", new String[]{title}, null, null, sortOrder);
+			break;
+		}
+		case GIFT_WITH_ID:{
+			
+			String idString = GiftContract.GiftEntry.getIdFromUri(uri);
+			Log.e("query for ID", idString);
+			retCursor = mOpenHelper.getReadableDatabase().query(GiftContract.GiftEntry.TABLE_NAME,
+					projection, GiftEntry._ID+"= ?", new String[]{idString}, null, null, sortOrder);
 			break;
 		}
 
@@ -52,9 +71,9 @@ public class GiftProvider extends ContentProvider {
 		final int match = sUriMatcher.match(uri);
 
 		switch (match) {
-		case GIFT_WITH_TEXT_AND_DATE:
+		case GIFT_WITH_ID:
 			return GiftContract.GiftEntry.CONTENT_ITEM_TYPE;
-		case GIFT_WITH_TEXT:
+		case GIFT_WITH_TITLE:
 			return GiftContract.GiftEntry.CONTENT_TYPE;
 		case GIFT:
 			return GiftContract.GiftEntry.CONTENT_TYPE;
@@ -80,7 +99,9 @@ public class GiftProvider extends ContentProvider {
 						"Failed to insert row into " + uri);
 			break;
 		}
-
+		case GIFT_WITH_TITLE:{
+			
+		}
 		default:
 			throw new UnsupportedOperationException("Unknown uri: " + uri);
 		}
@@ -120,7 +141,7 @@ public class GiftProvider extends ContentProvider {
 			rowsUpdated = db.update(GiftContract.GiftEntry.TABLE_NAME, values,
 					selection, selectionArgs);
 			break;
-
+		
 		default:
 			throw new UnsupportedOperationException("Unknown uri: " + uri);
 		}
@@ -146,10 +167,11 @@ public class GiftProvider extends ContentProvider {
 		// For each type of URI you want to add, create a corresponding code.
 		matcher.addURI(authority, GiftContract.PATH_GIFTS, GIFT);
 
+		matcher.addURI(authority, GiftContract.PATH_GIFTS + "/#",
+				GIFT_WITH_ID);
 		matcher.addURI(authority, GiftContract.PATH_GIFTS + "/*",
-				GIFT_WITH_TEXT);
-		matcher.addURI(authority, GiftContract.PATH_GIFTS + "/*/*",
-				GIFT_WITH_TEXT_AND_DATE);
+				GIFT_WITH_TITLE);
+		
 
 		return matcher;
 	}
@@ -158,13 +180,15 @@ public class GiftProvider extends ContentProvider {
 	public int bulkInsert(Uri uri, ContentValues[] values) {
 		final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 		final int match = sUriMatcher.match(uri);
+		int returnCount = 0;
 		switch (match) {
-		case GIFT:
+		case GIFT :
 			db.beginTransaction();
-			int returnCount = 0;
+			
 			try {
 				for (ContentValues value : values) {
 					long _id = db.insert(
+							
 							GiftContract.GiftEntry.TABLE_NAME, null,
 							value);
 					if (_id != -1) {
@@ -177,6 +201,27 @@ public class GiftProvider extends ContentProvider {
 			}
 			getContext().getContentResolver().notifyChange(uri, null);
 			return returnCount;
+		case GIFT_WITH_TITLE:{
+			db.beginTransaction();
+			
+			try {
+				for (ContentValues value : values) {
+					long _id = db.insert(
+							
+							GiftContract.GiftEntry.TABLE_NAME, null,
+							value);
+					if (_id != -1) {
+						returnCount++;
+					}
+				}
+				db.setTransactionSuccessful();
+			} finally {
+				db.endTransaction();
+			}
+			getContext().getContentResolver().notifyChange(uri, null);
+			return returnCount;
+			
+		}
 		default:
 			return super.bulkInsert(uri, values);
 		}

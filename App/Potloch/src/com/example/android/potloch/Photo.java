@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 
+import android.graphics.Bitmap;
+
 import com.google.common.base.Objects;
 
 
@@ -14,14 +16,21 @@ public class Photo {
 	private long id;
 
 	private String name;
-	private String url;
+
+    private String text;
+    private String user;
+    
+	
+	
 
 	private long likes;
 	
 	private Set<String> likedBy;
 	
 	private Set<Long> childrenID;
-	private long parentID; 
+	private long parentID;
+
+	private String date; 
 	public Set<Long> getChildrenPhotos() {
 		return childrenID;
 	}
@@ -41,24 +50,21 @@ public class Photo {
 	public Photo() {
 	}
 
-	public Photo(String name, String url, long parentID) {
+	public Photo(String name, String text, String user, String date, long id, long parentID) {
 		super();
 		this.name = name;
-		this.url = url;
+		this.text = text;
+		
+		this.user = user;
 		this.likes = 0;
+		this.date = date;
 		this.likedBy = new HashSet<String>();
 		this.childrenID = new HashSet<Long>();
 		this.parentID = parentID;
+		this.id = id;
+		
 	}
 
-	
-	public String getUrl() {
-		return url;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
-	}
 
 
 	public long getId() {
@@ -69,34 +75,13 @@ public class Photo {
 		this.id = id;
 	}
 
-	/**
-	 * Two Videos will generate the same hashcode if they have exactly the same
-	 * values for their name, url, and duration.
-	 * 
-	 */
-	@Override
-	public int hashCode() {
-		// Google Guava provides great utilities for hashing
-		return Objects.hashCode(name, url);
-	}
 
 	/**
 	 * Two Videos are considered equal if they have exactly the same values for
 	 * their name, url, and duration.
 	 * 
 	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof Photo) {
-			Photo other = (Photo) obj;
-			// Google Guava provides great utilities for equals too!
-			return Objects.equal(name, other.name)
-					&& Objects.equal(url, other.url);
-					
-		} else {
-			return false;
-		}
-	}
+
 
 	public String getName() {
 		return name;
@@ -130,5 +115,26 @@ public class Photo {
 	public void subtractOneLike(){
 		this.likes--;
 	}
+	public String getText() {
+		return text;
+	}
 
+	public void setText(String text) {
+		this.text = text;
+	}
+	public String getUser() {
+		return user;
+	}
+
+	public void setUser(String user) {
+		this.user = user;
+	}
+
+	public String getDate() {
+		return date;
+	}
+
+	public void setDate(String date) {
+		this.date = date;
+	}
 }

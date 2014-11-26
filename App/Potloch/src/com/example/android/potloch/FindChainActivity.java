@@ -91,7 +91,7 @@ public class FindChainActivity extends ActionBarActivity {
 						public Collection<Photo> call() throws Exception {
 							PhotoSvcApi photoService= RestServer.getInstance();
 							// TODO Auto-generated method stub
-							return photoService.findByTitle(chainEdit.getText().toString());
+							return photoService.findByNameContaining(chainEdit.getText().toString());
 						}},  new TaskCallback<Collection<Photo>>(){
 
 							@Override

@@ -37,6 +37,7 @@ public class GiftDbHelper extends SQLiteOpenHelper{
 	 
      GiftEntry.COLUMN_DATETEXT+ " TEXT NOT NULL, " +
      GiftEntry.COLUMN_TEXT+ " TEXT, " +
+     GiftEntry.COLUMN_PARENT+" INT, " +
      GiftEntry.COLUMN_LIKES+ " INT NOT NULL  ); "; 
 	  
 	 sqLiteDatabase.execSQL(SQL_CREATE_GIFT_TABLE);
@@ -48,4 +49,4 @@ public class GiftDbHelper extends SQLiteOpenHelper{
 		 sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + GiftEntry.TABLE_NAME);
 		 onCreate(sqLiteDatabase);
 	 }
-	 }
+}

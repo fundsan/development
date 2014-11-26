@@ -1,111 +1,141 @@
 package com.example.android.potloch;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
+import java.util.concurrent.Callable;
 
+
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBar;
+import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
-
+import android.widget.EditText;
+import android.widget.Toast;
+import android.os.Build;
 
 public class MainActivity extends ActionBarActivity {
-	static ArrayAdapter<String> mGiftAdapter;
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
-                    .commit();
-        }
-    }
+	public static String Clientsuser;
 
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		if (savedInstanceState == null) {
+			getSupportFragmentManager().beginTransaction()
+					.add(R.id.container, new PlaceholderFragment()).commit();
+		}
+	}
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.login, menu);
+		return true;
+	}
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-        	startActivity(new Intent(this,SettingsActivity.class));
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle action bar item clicks here. The action bar will
+		// automatically handle clicks on the Home/Up button, so long
+		// as you specify a parent activity in AndroidManifest.xml.
+		int id = item.getItemId();
+		if (id == R.id.action_settings) {
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
+	/**
+	 * A placeholder fragment containing a simple view.
+	 */
+	public static class PlaceholderFragment extends Fragment {
+		
+		  EditText userName_;
 
-        public PlaceholderFragment() {
-        }
+		
+		  EditText password_;
 
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            
-            String[] giftArray = {"This is the first","this is the second","this is the third",
-                                  "this is the fourth","This is the fifth"};
-            List<String> giftList = new ArrayList<String>(Arrays.asList(giftArray));
-            
-            mGiftAdapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item_gift, 
-            		R.id.list_item_gift_textview, giftList);
-            
-            ListView listView = (ListView) rootView.findViewById(R.id.listview_gifts);
-            listView.setAdapter(mGiftAdapter);
-            
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+		
+		  EditText server_;
+		  
+		  Button submit_;
+		public PlaceholderFragment() {
+		}
 
-				@Override
-				public void onItemClick(AdapterView<?> parent, View view,
-						int position, long id) {
-					String giftText = mGiftAdapter.getItem(position);
-					
-					Intent intent = new Intent(getActivity(), DetailActivity.class)
-					.putExtra(Intent.EXTRA_TEXT, giftText);
-					startActivity(intent);
-					
-					
-				}
-			
-            	
-			});
-            Button createButton = (Button) rootView.findViewById(R.id.main_create_button);
-            createButton.setOnClickListener(new View.OnClickListener() {
-				
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
+			Log.d("login", "in onCreateView");
+			View rootView = inflater.inflate(R.layout.fragment_main,
+					container, false);
+			userName_ = (EditText) rootView.findViewById(R.id.userName);
+			password_ =  (EditText) rootView.findViewById(R.id.password);
+			server_ = (EditText) rootView.findViewById(R.id.server);
+		    submit_ = (Button) rootView.findViewById(R.id.loginButton);
+		    submit_.setOnClickListener(new View.OnClickListener() {
+
 				@Override
 				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					Intent intent = new Intent(getActivity(),CreateActivity.class);
+					login();// TODO Auto-generated method stub
 					
-					startActivity(intent);
+				}});
+			
+			return rootView;
+		}
+	
+		public void login() {
+			Log.d("login", "in onClick");
+			final String user = userName_.getText().toString();
+			String pass = password_.getText().toString();
+			String server = server_.getText().toString();
+
+			final PhotoSvcApi svc = PhotoSvc.init(server, user, pass);
+
+			CallableTask.invoke(new Callable<Collection<Photo>>() {
+
+				@Override
+				public Collection<Photo> call() throws Exception {
+					return svc.getPhotoList();
+				}
+			}, new TaskCallback<Collection<Photo>>() {
+
+				@Override
+				public void success(Collection<Photo> result) {
+					// OAuth 2.0 grant was successful and we
+					// can talk to the server, open up the video listing
+					MainActivity.Clientsuser= user;
+					startActivity(new Intent(
+							getActivity(),
+							FetchActivity.class));
+				}
+
+				@Override
+				public void error(Exception e) {
+					Log.e(MainActivity.class.getName(), "Error logging in via OAuth. "+ e.toString());
 					
+					Toast.makeText(
+							getActivity(),
+							"Login failed, check your Internet connection and credentials.",
+							Toast.LENGTH_SHORT).show();
 				}
 			});
-            return rootView;
-        }
-    }
+		}
+
+	}
+
+	
 }
+
 

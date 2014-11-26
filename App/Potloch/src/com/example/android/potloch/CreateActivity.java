@@ -2,10 +2,21 @@ package com.example.android.potloch;
 
 
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
+
+import org.imgscalr.Scalr;
+
+import com.google.common.io.Files;
 
 
 
@@ -13,11 +24,23 @@ import java.util.concurrent.Callable;
 
 import retrofit.RestAdapter;
 import retrofit.RestAdapter.LogLevel;
+import retrofit.RetrofitError;
 import retrofit.client.ApacheClient;
+import retrofit.mime.MimeUtil;
+import retrofit.mime.TypedFile;
+import retrofit.mime.TypedInput;
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
+
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -34,10 +57,7 @@ import android.widget.Toast;
 
 public class CreateActivity extends ActionBarActivity {
 	
-	static ImageView imgBut;
-	static EditText extraText;
-	static Button subBut;
-	static TextView title;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +93,12 @@ public class CreateActivity extends ActionBarActivity {
 	 * A placeholder fragment containing a simple view.
 	 */
 	public static class PlaceholderFragment extends Fragment {
-
+		private ImageView imgBut;
+		static Uri imgUri;
+		private EditText extraText;
+		private Button subBut;
+		private TextView title;
+		
 		public PlaceholderFragment() {
 		}
 
@@ -110,22 +135,41 @@ public class CreateActivity extends ActionBarActivity {
 					//saveData(new Photo(title.getText().toString(),"/"+title.getText().toString()));
 					CallableTask.invoke(new Callable<Photo>() {
 
+						
 						@Override
 						public Photo call() throws Exception {
 							// TODO Auto-generated method stub
 						
 
-							PhotoSvcApi photoService= RestServer.getInstance();
+							PhotoSvcApi photoService= PhotoSvc.getOrShowLogin(getActivity().getBaseContext());
 							Intent intent = getActivity().getIntent();
-							Photo p = new Photo(title.getText().toString(),"/"+title.getText().toString(), intent.getExtras().getLong("PARENTID"));
+							String realPath = Utility.getRealPathFromURI(getActivity(), imgUri);
+							
+							
+						
+							Bitmap bitmap = ((BitmapDrawable)imgBut.getDrawable()).getBitmap();
+							ByteArrayOutputStream baos = new ByteArrayOutputStream();
+							
+							bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+
+							
+							
+							byte[] imageBytes = baos.toByteArray();
+							Log.d("detail", String.valueOf(imageBytes.length));
+							Long newId = photoService.addPhotoData(imageBytes);
+							Photo p = new Photo(title.getText().toString(),extraText.getText().toString(),MainActivity.Clientsuser,Utility.getDate(), (long)newId, 0);
+							
+							
+					        
+							
+							
+							
 							
 							photoService.addPhoto(p);
-							
-							
-							 return p;
+							return p;
+						
+					
 						}
-					
-					
 				},new TaskCallback<Photo>() {
 
 					
@@ -161,21 +205,13 @@ public class CreateActivity extends ActionBarActivity {
 			if(resCode== RESULT_OK){
 				if(reqCode == 1){
 				imgBut.setImageURI(data.getData());
+				imgUri = data.getData();
 				extraText.setVisibility(EditText.VISIBLE);
 				subBut.setVisibility(Button.VISIBLE);
-				
 				
 			    }
 			}
 		}
-		public void saveData(Photo p){
-			PhotoSvcApi videoService = new RestAdapter.Builder()
-			.setEndpoint(PhotoSvcApi.TEST_URL)
-			.setLogLevel(LogLevel.FULL)
-			.build()
-			.create(PhotoSvcApi.class);
-			videoService.addPhoto(p);
 		
-		}
 	}
 }

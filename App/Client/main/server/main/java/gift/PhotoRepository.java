@@ -32,11 +32,11 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 	public interface PhotoRepository extends CrudRepository<Photo, Long>{
 
 		// Find all videos with a matching title (e.g., Video.name)
-		public Collection<Photo> findByName(
+		public Collection<Photo> findByNameContaining(
 				// The @Param annotation tells Spring Data Rest which HTTP request
-				// parameter it should use to fill in the "title" variable used to
-				// search for Videos
-				@Param(PhotoSvcApi.TITLE_PARAMETER) String title);
+				// parameter it should use to fill in the "name" variable used to
+				// search for Gifts
+				@Param(PhotoSvcApi.TITLE_PARAMETER) String name);
 		
 		
 

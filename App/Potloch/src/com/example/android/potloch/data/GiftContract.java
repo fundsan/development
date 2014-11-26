@@ -39,6 +39,8 @@ public class GiftContract {
 
 		// number of likes
 		public static final String COLUMN_LIKES = "likes";
+		//parent 
+		public static final String COLUMN_PARENT = "parentID";
 
 		// who liked it
 		// public static final String COLUMN_LIKEDBY = "likedby";
@@ -46,15 +48,24 @@ public class GiftContract {
 			return ContentUris.withAppendedId(CONTENT_URI, id);
 		}
 
-		
+		public static Uri buildGiftUriTitle(String title){
+			return CONTENT_URI.buildUpon().appendPath(title).build();
+		}
 
-		public static String getDateFromUri(Uri uri) {
-			return uri.getPathSegments().get(2);
+		public static String getTitleFromUri(Uri uri) {
+			return uri.getPathSegments().get(1);
 		}
 
 		public static String getStartDateFromUri(Uri uri) {
 			return uri.getQueryParameter(COLUMN_DATETEXT);
 		}
+
+		public static String getIdFromUri(Uri uri) {
+			// TODO Auto-generated method stub
+			return uri.getPathSegments().get(1);
+		}
+
+		
 
 	}
 }

@@ -7,219 +7,150 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Vector;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.example.android.potloch.data.GiftContract.GiftEntry;
+
+import android.annotation.TargetApi;
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 
 public class FetchGiftTask extends AsyncTask<String, Void, String[]> {
 
+	private static final boolean DEBUG = true;
 	private final String LOG_TAG = FetchGiftTask.class.getSimpleName();
-
-	private ArrayAdapter<String> mGiftAdapter;
+	
+	
 	private final Context mContext;
 
-	public FetchGiftTask(Context context,
-			ArrayAdapter<String> forecastAdapter) {
+	public FetchGiftTask(Context context) {
 		mContext = context;
-		mGiftAdapter = forecastAdapter;
 	}
 
 	/*
 	 * The date/time conversion code is going to be moved outside the asynctask
 	 * later, so for convenience we're breaking it out into its own method now.
 	 */
-	private String getReadableDateString(long time) {
-		// Because the API returns a unix timestamp (measured in seconds),
-		// it must be converted to milliseconds in order to be converted to
-		// valid date.
-		Date date = new Date(time * 1000);
-		SimpleDateFormat format = new SimpleDateFormat("E, MMM d");
-		return format.format(date).toString();
-	}
-
-	/**
-	 * Prepare the weather high/lows for presentation.
-	 */
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	private String[] getGiftData(Collection<Photo> photos
+			) {
 	
-	/**
-	 * Take the String representing the complete forecast in JSON Format and
-	 * pull out the data we need to construct the Strings needed for the
-	 * wireframes.
-	 * 
-	 * Fortunately parsing is easy: constructor takes the JSON string and
-	 * converts it into an Object hierarchy for us.
-	 */
-	private String[] getGiftDataFromJson(String forecastJsonStr, int numDays)
-			throws JSONException {
-
-		// These are the names of the JSON objects that need to be extracted.
-		final String OWM_LIST = "list";
-		final String OWM_WEATHER = "weather";
-		final String OWM_TEMPERATURE = "temp";
-		final String OWM_MAX = "max";
-		final String OWM_MIN = "min";
-		final String OWM_DATETIME = "dt";
-		final String OWM_DESCRIPTION = "main";
-
-		JSONObject forecastJson = new JSONObject(forecastJsonStr);
-		JSONArray weatherArray = forecastJson.getJSONArray(OWM_LIST);
-
-		String[] resultStrs = new String[numDays];
-		for (int i = 0; i < weatherArray.length(); i++) {
-			// For now, using the format "Day, description, hi/low"
-			String day;
-			String description;
-			String highAndLow;
-
-			// Get the JSON object representing the day
-			JSONObject dayForecast = weatherArray.getJSONObject(i);
-
-			// The date/time is returned as a long. We need to convert that
-			// into something human-readable, since most people won't read
-			// "1400356800" as
-			// "this saturday".
-			long dateTime = dayForecast.getLong(OWM_DATETIME);
-			day = getReadableDateString(dateTime);
-
-			// description is in a child array called "weather", which is 1
-			// element long.
-			JSONObject weatherObject = dayForecast.getJSONArray(OWM_WEATHER)
-					.getJSONObject(0);
-			description = weatherObject.getString(OWM_DESCRIPTION);
-
-			// Temperatures are in a child object called "temp". Try not to name
-			// variables
-			// "temp" when working with temperature. It confuses everybody.
-			JSONObject temperatureObject = dayForecast
-					.getJSONObject(OWM_TEMPERATURE);
-			double high = temperatureObject.getDouble(OWM_MAX);
-			double low = temperatureObject.getDouble(OWM_MIN);
-
-			highAndLow = formatHighLows(high, low);
-			resultStrs[i] = day + " - " + description + " - " + highAndLow;
+		// Insert the location into the database.
+		
+		// Get and insert the new weather information into the database
+		Vector<ContentValues> cVVector = new Vector<ContentValues>(
+				photos.size());
+		String[] resultStrs = new String[photos.size()];
+		Photo[] photosArr = (Photo[]) photos.toArray();
+		for (int i = 0; i < photosArr.length; i++) {
+			// These are the values that will be collected.
+			Photo currentPhoto = photosArr[i];
+			String title = currentPhoto.getName(); 
+			String detail = currentPhoto.getText(); 
+			long likes = currentPhoto.getLikes();
+			String user = currentPhoto.getUser(); 
+			String date = currentPhoto.getDate();
+			
+			long parentID = currentPhoto.getParentPhoto();
+			
+			ContentValues giftValues = new ContentValues();
+			giftValues.put(GiftEntry.COLUMN_TITLE, title);
+			giftValues.put(GiftEntry.COLUMN_TEXT, detail);
+			giftValues.put(GiftEntry.COLUMN_USER, user);
+			giftValues.put(GiftEntry.COLUMN_LIKES, likes);
+			giftValues.put(GiftEntry.COLUMN_DATETEXT, date);
+			giftValues.put(GiftEntry.COLUMN_PARENT, parentID);
+			
+			
+			cVVector.add(giftValues);
+			
+		}
+		if (cVVector.size() > 0) {
+			ContentValues[] cvArray = new ContentValues[cVVector.size()];
+			cVVector.toArray(cvArray);
+			int rowsInserted = mContext.getContentResolver().bulkInsert(
+					GiftEntry.CONTENT_URI, cvArray);
+			Log.v(LOG_TAG, "inserted " + rowsInserted + " rows of weather data");
+			// Use a DEBUG variable to gate whether or not you do this, so you
+			// can easily
+			// turn it on and off, and so that it's easy to see what you can rip
+			// out if
+			// you ever want to remove it.
+			if (DEBUG) {
+				Cursor weatherCursor = mContext.getContentResolver().query(
+						GiftEntry.CONTENT_URI, null, null, null, null);
+				if (weatherCursor.moveToFirst()) {
+					ContentValues resultValues = new ContentValues();
+					DatabaseUtils.cursorRowToContentValues(weatherCursor,
+							resultValues);
+					Log.v(LOG_TAG, "Query succeeded! **********");
+					for (String key : resultValues.keySet()) {
+						Log.v(LOG_TAG,
+								key + ": " + resultValues.getAsString(key));
+					}
+				} else {
+					Log.v(LOG_TAG, "Query failed! :( **********");
+				}
+			}
 		}
 		return resultStrs;
-
 	}
 
 	@Override
 	protected String[] doInBackground(String... params) {
-
-		// If there's no zip code, there's nothing to look up. Verify size of
-		// params.
-		if (params.length == 0) {
-			return null;
+		String titleText = params[0];
+		Collection<Photo> photos = PhotoSvc.getOrShowLogin(mContext).findByNameContaining(titleText);
+		Log.e("Fetch", String.valueOf(photos.size()));
+		String[] results = new String[photos.size()];
+		int i = 0;
+		for (Photo photo : photos) {
+			results[i] = photo.getName();
+			long gitsID = addGift(photo.getName(), photo.getText(),
+					photo.getUser(), photo.getLikes(), photo.getDate(),photo.getParentPhoto());
+			i++;
 		}
 
-		// These two need to be declared outside the try/catch
-		// so that they can be closed in the finally block.
-		HttpURLConnection urlConnection = null;
-		BufferedReader reader = null;
-
-		// Will contain the raw JSON response as a string.
-		String forecastJsonStr = null;
-
-		String format = "json";
-	
-		int numGifts = 7;
-
-		try {
-			// Construct the URL for the OpenWeatherMap query
-			// Possible parameters are avaiable at OWM's forecast API page, at
-			// http://openweathermap.org/API#forecast
-			final String FORECAST_BASE_URL = "http://api.openweathermap.org/data/2.5/forecast/daily?";
-			final String QUERY_PARAM = "q";
-			final String FORMAT_PARAM = "mode";
-			final String UNITS_PARAM = "units";
-			final String DAYS_PARAM = "cnt";
-
-			Uri builtUri = Uri
-					.parse(FORECAST_BASE_URL)
-					.buildUpon()
-					.appendQueryParameter(QUERY_PARAM, params[0])
-					.appendQueryParameter(FORMAT_PARAM, format)
-					.appendQueryParameter(UNITS_PARAM, units)
-					.appendQueryParameter(DAYS_PARAM, Integer.toString(numDays))
-					.build();
-
-			URL url = new URL(builtUri.toString());
-
-			// Create the request to OpenWeatherMap, and open the connection
-			urlConnection = (HttpURLConnection) url.openConnection();
-			urlConnection.setRequestMethod("GET");
-			urlConnection.connect();
-
-			// Read the input stream into a String
-			InputStream inputStream = urlConnection.getInputStream();
-			StringBuffer buffer = new StringBuffer();
-			if (inputStream == null) {
-				// Nothing to do.
-				return null;
-			}
-			reader = new BufferedReader(new InputStreamReader(inputStream));
-
-			String line;
-			while ((line = reader.readLine()) != null) {
-				// Since it's JSON, adding a newline isn't necessary (it won't
-				// affect parsing)
-				// But it does make debugging a *lot* easier if you print out
-				// the completed
-				// buffer for debugging.
-				buffer.append(line + "\n");
-			}
-
-			if (buffer.length() == 0) {
-				// Stream was empty. No point in parsing.
-				return null;
-			}
-			forecastJsonStr = buffer.toString();
-		} catch (IOException e) {
-			Log.e(LOG_TAG, "Error ", e);
-			// If the code didn't successfully get the weather data, there's no
-			// point in attemping
-			// to parse it.
-			return null;
-		} finally {
-			if (urlConnection != null) {
-				urlConnection.disconnect();
-			}
-			if (reader != null) {
-				try {
-					reader.close();
-				} catch (final IOException e) {
-					Log.e(LOG_TAG, "Error closing stream", e);
-				}
-			}
-		}
-
-		try {
-			return getWeatherDataFromJson(forecastJsonStr, numDays);
-		} catch (JSONException e) {
-			Log.e(LOG_TAG, e.getMessage(), e);
-			e.printStackTrace();
-		}
-
-		// This will only happen if there was an error getting or parsing the
-		// forecast.
-		return null;
+		return results;
 	}
 
-	@Override
-	protected void onPostExecute(String[] result) {
-		if (result != null) {
-			mGiftAdapter.clear();
-			for (String dayForecastStr : result) {
-				mGiftAdapter.add(dayForecastStr);
-			}
-			// New data is back from the server. Hooray!
+	private long addGift(String title, String detail, String user, long likes,
+			String date, long parentID) {
+		Cursor cursor = mContext.getContentResolver().query(
+				GiftEntry.CONTENT_URI, new String[] { GiftEntry._ID },
+				GiftEntry.COLUMN_TITLE + " = ?", new String[] { title }, null);
+
+		if (cursor.moveToFirst()) {
+			Log.v(LOG_TAG, "Found it in the database!");
+			int giftIdIndex = cursor.getColumnIndex(GiftEntry._ID);
+			return cursor.getLong(giftIdIndex);
+		} else {
+			Log.v(LOG_TAG, "Didn't find it in the database, inserting now!");
+			ContentValues giftValues = new ContentValues();
+			giftValues.put(GiftEntry.COLUMN_TITLE, title);
+			giftValues.put(GiftEntry.COLUMN_TEXT, detail);
+			giftValues.put(GiftEntry.COLUMN_USER, user);
+			giftValues.put(GiftEntry.COLUMN_LIKES, likes);
+			giftValues.put(GiftEntry.COLUMN_DATETEXT, date);
+			giftValues.put(GiftEntry.COLUMN_PARENT, parentID);
+			Uri giftInsertUri = mContext.getContentResolver().insert(
+					GiftEntry.CONTENT_URI, giftValues);
+			return ContentUris.parseId(giftInsertUri);
 		}
 	}
 }

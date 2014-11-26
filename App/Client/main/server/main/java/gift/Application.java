@@ -46,7 +46,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 //Any class in this package that is annotated with @Controller is going to be
 //automatically discovered and connected to the DispatcherServlet.
 @ComponentScan
-//@Import(OAuth2SecurityConfiguration.class)
+@Import(OAuth2SecurityConfiguration.class)
 public class Application extends RepositoryRestMvcConfiguration {
 	
 	private static final String MAX_REQUEST_SIZE = "150MB";

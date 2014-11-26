@@ -26,7 +26,7 @@ public class TestProvider extends AndroidTestCase {
 		giftValues.put(GiftEntry.COLUMN_USER, "user1");
 		giftValues.put(GiftEntry.COLUMN_LIKES, 0);
 		giftValues.put(GiftEntry.COLUMN_TEXT, "these are two cats");
-
+		
 		Uri giftInsertUri = mContext.getContentResolver().insert(
 				GiftEntry.CONTENT_URI, giftValues);
 		assertTrue(giftInsertUri != null);
